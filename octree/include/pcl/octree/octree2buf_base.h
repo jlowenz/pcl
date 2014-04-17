@@ -45,6 +45,7 @@
 #include "octree_container.h"
 #include "octree_key.h"
 #include "octree_iterator.h"
+#include "octree_observer.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -266,6 +267,11 @@ namespace pcl
         typedef const OctreeBreadthFirstIterator<OctreeT> ConstBreadthFirstIterator;
         BreadthFirstIterator breadth_begin(unsigned int max_depth_arg = 0) {return BreadthFirstIterator(this, max_depth_arg);};
         const BreadthFirstIterator breadth_end() {return BreadthFirstIterator();};
+
+      
+      typedef OctreeObserver<LeafContainerT,BranchContainerT> ObserverT;
+      // Octree signal
+      OctreeLeafSignal<LeafContainerT, BranchContainerT> leaf_signal;
 
         /** \brief Empty constructor. */
         Octree2BufBase ();

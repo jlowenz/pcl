@@ -138,6 +138,9 @@ namespace pcl
         // Size of neighbors
         inline size_t size () const { return leaf_vector_.size (); }
 
+      typedef typename OctreeBaseT::ObserverT ObserverT;
+        using OctreeBaseT::leaf_signal;
+
         /** \brief Constructor.
           *
           * \param[in] resolution_arg Octree resolution at lowest octree level (voxel size) */

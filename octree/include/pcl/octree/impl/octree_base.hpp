@@ -317,6 +317,9 @@ namespace pcl
             return_leaf_arg = leaf_node;
             parent_of_leaf_arg = branch_arg;
             this->leaf_count_++;
+
+	    // send the signal
+	    leaf_signal.leafCreated(leaf_node->getContainerPtr());
           }
         }
         else
@@ -419,6 +422,10 @@ namespace pcl
 
             case LEAF_NODE:
               // return existing leaf node
+	      
+	      LeafNode* leaf_node = static_cast<LeafNode*>(child_node);
+	      // send the signal
+	      leaf_signal.leafDestroyed(leaf_node->getContainerPtr());
 
               // our child is a leaf node -> delete it
               deleteBranchChild (*branch_arg, child_idx);

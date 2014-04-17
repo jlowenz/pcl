@@ -104,6 +104,9 @@ namespace pcl
         typedef OctreeBreadthFirstIterator<OctreeT> BreadthFirstIterator;
         typedef const OctreeBreadthFirstIterator<OctreeT> ConstBreadthFirstIterator;
 
+	typedef typename OctreeT::ObserverT ObserverT;
+	using OctreeT::leaf_signal;
+
         /** \brief Octree pointcloud constructor.
          * \param[in] resolution_arg octree resolution at lowest octree level
          */

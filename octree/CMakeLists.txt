@@ -15,6 +15,7 @@ if(build)
     set(incs 
         "include/pcl/${SUBSYS_NAME}/boost.h"
         "include/pcl/${SUBSYS_NAME}/octree_base.h"
+	"include/pcl/${SUBSYS_NAME}/octree_observer.h"
         "include/pcl/${SUBSYS_NAME}/octree_container.h"
         "include/pcl/${SUBSYS_NAME}/octree_impl.h"
         "include/pcl/${SUBSYS_NAME}/octree_nodes.h"
@@ -36,6 +37,7 @@ if(build)
 
     set(impl_incs    
         "include/pcl/${SUBSYS_NAME}/impl/octree_base.hpp"
+	"include/pcl/${SUBSYS_NAME}/impl/octree_observer.hpp"
         "include/pcl/${SUBSYS_NAME}/impl/octree_pointcloud.hpp"
         "include/pcl/${SUBSYS_NAME}/impl/octree2buf_base.hpp"
         "include/pcl/${SUBSYS_NAME}/impl/octree_iterator.hpp"
