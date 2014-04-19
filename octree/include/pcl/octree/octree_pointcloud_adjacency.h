@@ -60,14 +60,23 @@ namespace pcl
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /** \brief @b Octree pointcloud voxel class which maintains adjacency information for its voxels.
       *
-      * This pointcloud octree class generates an octree from a point cloud (zero-copy). The octree pointcloud is
-      * initialized with its voxel resolution. Its bounding box is automatically adjusted or can be predefined.
+      * This pointcloud adjacency octree class generates an octree
+      * from a point cloud (zero-copy). The octree is initialized with
+      * its voxel resolution. Its bounding box is automatically
+      * adjusted or can be predefined.
       *
-      * The OctreePointCloudAdjacencyContainer class can be used to store data in leaf nodes.
+      * The OctreePointCloudAdjacencyContainer class can be used to
+      * store data in leaf nodes by customizing the DataT template
+      * parameter with a class that models the
+      * AdjacencyDataConcept. See @OctreePointCloudAdjacencyContainer
+      * for more information, and @SupervoxelClustering for an example
+      * of data storage.
       *
-      * An optional transform function can be provided which changes how the voxel grid is computed - this can be used to,
-      * for example, make voxel bins larger as they increase in distance from the origin (camera).
-      * \note See SupervoxelClustering for an example of how to provide a transform function.
+      * An optional transform function can be provided which changes
+      * how the voxel grid is computed - this can be used to, for
+      * example, make voxel bins larger as they increase in distance
+      * from the origin (camera).  \note See SupervoxelClustering for
+      * an example of how to provide a transform function.
       *
       * If used in academic work, please cite:
       *

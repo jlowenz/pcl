@@ -45,12 +45,70 @@ namespace pcl
   
   namespace octree
   {
+
+    template<bool T> 
+    struct bool_to_type {};
+    
+    // Execute the addPoint method if it exists on type T
+    // Utilizes SFINAE (substitution failure is not an error) to build a class at compile time
+    // that calls the function only if it exists
+    template<typename Pt, typename T>
+    struct has_add_point {
+      typedef T value_type;
+      
+      template<typename A, void (A::*)(const Pt&)> struct correct_sig {};
+      template<typename A> static uint8_t func_exists(correct_sig<A, &A::addPoint>*) { return 0; }
+      template<typename A> static uint16_t func_exists(...) { return 0; }
+      static const bool value = sizeof(func_exists<T>(NULL)) == 1;
+
+      // call the function, since it exists
+      template<typename A>
+      void eval(A& data, const Pt& p, bool_to_type<true>) { data.addPoint(p); }
+      // don't call the function, since it doesn't exist
+      template<typename A>
+      void eval(A& data, const Pt& p, bool_to_type<false>) {}
+      
+      has_add_point(T& data, const Pt& p) {
+	eval(data, p, bool_to_type<value>());
+      }
+    };
+
+    // Execute the computeData method if it exists on type T
+    template<typename T>
+    struct has_compute_data {
+      typedef T value_type;
+      
+      template<typename A, void (A::*)()> struct correct_sig {};
+      template<typename A> static uint8_t func_exists(correct_sig<A, &A::computeData>*) { return 0; }
+      template<typename A> static uint16_t func_exists(...) { return 0; }
+      static const bool value = sizeof(func_exists<T>(NULL)) == 1;
+
+      // call the function, since it exists
+      template<typename A>
+      inline void eval(A& data, bool_to_type<true>) { data.computeData(); }
+      // don't call the function, since it doesn't exist
+      template<typename A>
+      inline void eval(A&, bool_to_type<false>) {}
+      
+      has_compute_data(T& data) {
+	eval(data, bool_to_type<value>());
+      }
+    };
+      
+
     /** \brief @b Octree adjacency leaf container class- stores set of pointers to neighbors, number of points added, and a DataT value
     *    \note This class implements a leaf node that stores pointers to neighboring leaves
     *   \note This class also has a virtual computeData function, which is called by octreePointCloudAdjacency::addPointsFromInputCloud.
-    *   \note You should make explicit instantiations of it for your pointtype/datatype combo (if needed) see supervoxel_clustering.hpp for an example of this
+    *   \note the DataT parameter can provide the add_point or compute_data concepts. See @AdjacencyData as an example.
+    *  auto concept add_point {
+    *     void addPoint(const PointInT&);
+    *  }
+    *
+    *  auto concept compute_data {
+    *     void computeData();
+    *  }
     */
-    template<typename PointInT, typename DataT = PointInT>
+    template<typename PointInT, typename DataT = PointInT >
     class OctreePointCloudAdjacencyContainer : public OctreeContainerBase
     {
     public:
@@ -95,10 +153,13 @@ namespace pcl
        * \param[in] new_point the new point to add  
        */
       void 
-      addPoint (const PointInT& /*new_point*/)
+      addPoint (const PointInT& new_point)
       {
         using namespace pcl::common;
         ++num_points_;
+
+	// call addPoint if it exists
+	has_add_point<PointInT, DataT> hap(data_, new_point);
       }
       
       /** \brief Function for working on data added. Base implementation does nothing 
@@ -106,6 +167,8 @@ namespace pcl
       void
       computeData ()
       {
+	// call computeData if it exists
+	has_compute_data<DataT> hcd(data_);
       }
       
       /** \brief Gets the number of points contributing to this leaf */

@@ -82,7 +82,7 @@ pcl::octree::OctreePointCloudAdjacency<PointT, LeafContainerT, BranchContainerT>
 template<typename PointT, typename LeafContainerT, typename BranchContainerT> void
 pcl::octree::OctreePointCloudAdjacency<PointT, LeafContainerT, BranchContainerT>::addPointIdx (const int pointIdx_arg)
 {
-//  std::cout<<"THE FUNCTION WE WANT TO BE CALLED IS BEING CALLED"<<std::endl;
+  //std::cout<<"THE FUNCTION WE WANT TO BE CALLED IS BEING CALLED"<<std::endl;
 
   OctreeKey key;
   
