@@ -100,7 +100,6 @@ pcl::octree::OctreePointCloudAdjacency<PointT, LeafContainerT, BranchContainerT>
 
   // adjacency octree implies fixed sized voxels
   assert(this->dynamic_depth_enabled_ == false);
-  std::cout<<"Dynamic depth?"<<this->dynamic_depth_enabled_<<std::endl;
 
   // Create leaf if one doesnt already exist  
   bool newly_created=true; // determine if the leaf already exists
