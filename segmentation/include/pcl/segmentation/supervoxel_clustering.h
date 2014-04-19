@@ -132,6 +132,7 @@ namespace pcl
       {
         public:
           VoxelData ():
+	    num_pts_(0),
             xyz_ (0.0f, 0.0f, 0.0f),
             rgb_ (0.0f, 0.0f, 0.0f),
             normal_ (0.0f, 0.0f, 0.0f, 0.0f),
@@ -150,7 +151,14 @@ namespace pcl
            */            
           void
           getNormal (Normal &normal_arg) const;
-          
+
+	  /** \brief Integrate a new point into the voxel's representation.
+	   * \param[in] point The point to add to the voxel
+	   */
+	  void
+	  addPoint(const PointT& point);
+
+	  uint num_pts_;
           Eigen::Vector3f xyz_;
           Eigen::Vector3f rgb_;
           Eigen::Vector4f normal_;

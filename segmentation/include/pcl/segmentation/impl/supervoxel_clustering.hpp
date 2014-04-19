@@ -761,90 +761,6 @@ pcl::SupervoxelClustering<PointT>::getMaxLabel () const
   return max_label;
 }
 
-namespace pcl
-{ 
-  
-  namespace octree
-  {
-    //Explicit overloads for RGB types
-    template<>
-    void
-    pcl::octree::OctreePointCloudAdjacencyContainer<pcl::PointXYZRGB,pcl::SupervoxelClustering<pcl::PointXYZRGB>::VoxelData>::addPoint (const pcl::PointXYZRGB &new_point)
-    {
-      ++num_points_;
-      //Same as before here
-      data_.xyz_[0] += new_point.x;
-      data_.xyz_[1] += new_point.y;
-      data_.xyz_[2] += new_point.z;
-      //Separate sums for r,g,b since we cant sum in uchars
-      data_.rgb_[0] += static_cast<float> (new_point.r); 
-      data_.rgb_[1] += static_cast<float> (new_point.g); 
-      data_.rgb_[2] += static_cast<float> (new_point.b); 
-    }
-    
-    template<>
-    void
-    pcl::octree::OctreePointCloudAdjacencyContainer<pcl::PointXYZRGBA,pcl::SupervoxelClustering<pcl::PointXYZRGBA>::VoxelData>::addPoint (const pcl::PointXYZRGBA &new_point)
-    {
-      ++num_points_;
-      //Same as before here
-      data_.xyz_[0] += new_point.x;
-      data_.xyz_[1] += new_point.y;
-      data_.xyz_[2] += new_point.z;
-      //Separate sums for r,g,b since we cant sum in uchars
-      data_.rgb_[0] += static_cast<float> (new_point.r); 
-      data_.rgb_[1] += static_cast<float> (new_point.g); 
-      data_.rgb_[2] += static_cast<float> (new_point.b); 
-    }
-    
-
-    
-    //Explicit overloads for RGB types
-    template<> void
-    pcl::octree::OctreePointCloudAdjacencyContainer<pcl::PointXYZRGB,pcl::SupervoxelClustering<pcl::PointXYZRGB>::VoxelData>::computeData ()
-    {
-      data_.rgb_[0] /= (static_cast<float> (num_points_));
-      data_.rgb_[1] /= (static_cast<float> (num_points_));
-      data_.rgb_[2] /= (static_cast<float> (num_points_));
-      data_.xyz_[0] /= (static_cast<float> (num_points_));
-      data_.xyz_[1] /= (static_cast<float> (num_points_));
-      data_.xyz_[2] /= (static_cast<float> (num_points_));    
-    }
-    
-    template<> void
-    pcl::octree::OctreePointCloudAdjacencyContainer<pcl::PointXYZRGBA,pcl::SupervoxelClustering<pcl::PointXYZRGBA>::VoxelData>::computeData ()
-    {
-      data_.rgb_[0] /= (static_cast<float> (num_points_));
-      data_.rgb_[1] /= (static_cast<float> (num_points_));
-      data_.rgb_[2] /= (static_cast<float> (num_points_));
-      data_.xyz_[0] /= (static_cast<float> (num_points_));
-      data_.xyz_[1] /= (static_cast<float> (num_points_));
-      data_.xyz_[2] /= (static_cast<float> (num_points_));
-    }
-
-    //Explicit overloads for XYZ types
-    template<>
-    void
-    pcl::octree::OctreePointCloudAdjacencyContainer<pcl::PointXYZ,pcl::SupervoxelClustering<pcl::PointXYZ>::VoxelData>::addPoint (const pcl::PointXYZ &new_point)
-    {
-      ++num_points_;
-      //Same as before here
-      data_.xyz_[0] += new_point.x;
-      data_.xyz_[1] += new_point.y;
-      data_.xyz_[2] += new_point.z;
-    }
-
-    template<> void
-    pcl::octree::OctreePointCloudAdjacencyContainer<pcl::PointXYZ,pcl::SupervoxelClustering<pcl::PointXYZ>::VoxelData>::computeData ()
-    {
-      data_.xyz_[0] /= (static_cast<float> (num_points_));
-      data_.xyz_[1] /= (static_cast<float> (num_points_));
-      data_.xyz_[2] /= (static_cast<float> (num_points_));
-    }
-
-  }
-}
-
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -890,6 +806,41 @@ namespace pcl
     normal_arg.normal_y = normal_[1];
     normal_arg.normal_z = normal_[2];
     normal_arg.curvature = curvature_;
+  }
+
+  // specializations for different point types
+  template <> void
+  pcl::SupervoxelClustering<pcl::PointXYZ>::VoxelData::addPoint (const pcl::PointXYZ& pt) 
+  {
+    // running average
+    xyz_[0] += xyz_[0] + (pt.x - xyz_[0]) / (num_pts_ + 1.f);
+    xyz_[1] += xyz_[1] + (pt.y - xyz_[1]) / (num_pts_ + 1.f);
+    xyz_[2] += xyz_[2] + (pt.z - xyz_[2]) / (num_pts_ + 1.f);
+    num_pts_++;
+  }
+
+  template <> void
+  pcl::SupervoxelClustering<PointXYZRGB>::VoxelData::addPoint (const PointXYZRGB& pt) 
+  {
+    xyz_[0] += xyz_[0] + (pt.x - xyz_[0]) / (num_pts_ + 1.f);
+    xyz_[1] += xyz_[1] + (pt.y - xyz_[1]) / (num_pts_ + 1.f);
+    xyz_[2] += xyz_[2] + (pt.z - xyz_[2]) / (num_pts_ + 1.f);
+    rgb_[0] += rgb_[0] + (pt.r - rgb_[0]) / (num_pts_ + 1.f);
+    rgb_[1] += rgb_[1] + (pt.g - rgb_[1]) / (num_pts_ + 1.f);
+    rgb_[2] += rgb_[2] + (pt.b - rgb_[2]) / (num_pts_ + 1.f);
+    num_pts_++;
+  }
+
+  template <> void
+  pcl::SupervoxelClustering<PointXYZRGBA>::VoxelData::addPoint (const PointXYZRGBA& pt) 
+  {
+    xyz_[0] += xyz_[0] + (pt.x - xyz_[0]) / (num_pts_ + 1.f);
+    xyz_[1] += xyz_[1] + (pt.y - xyz_[1]) / (num_pts_ + 1.f);
+    xyz_[2] += xyz_[2] + (pt.z - xyz_[2]) / (num_pts_ + 1.f);
+    rgb_[0] += rgb_[0] + (pt.r - rgb_[0]) / (num_pts_ + 1.f);
+    rgb_[1] += rgb_[1] + (pt.g - rgb_[1]) / (num_pts_ + 1.f);
+    rgb_[2] += rgb_[2] + (pt.b - rgb_[2]) / (num_pts_ + 1.f);
+    num_pts_++;
   }
 }
   
