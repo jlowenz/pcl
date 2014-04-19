@@ -130,18 +130,18 @@ pcl::octree::OctreePointCloudAdjacency<PointT, LeafContainerT, BranchContainerT>
 
 // Container management, new leaf update
   // add point to octree at key (set VoxelData for leaf container).
-  LeafContainerT* leaf_container = this->createLeaf(key);  // Generates Octree Key for Point
+  LeafContainerT* leaf_container = this->createLeaf(key);  // Generates Octree Key for Point, or returns existing leaf container ptr
 
-  // Only Add this container to vector its a new leaf
-  if (std::find(leaf_vector_.begin(),leaf_vector_.end(),leaf_container)==leaf_vector_.end()) 
-  {
-    leaf_container->computeData ();
-    computeNeighbors (key, leaf_container);
-    leaf_vector_.push_back (leaf_container);
-  }
   // From the original algorithm just modify the existing container using overloaded specialized addPoint function
   leaf_container->addPoint (point);
+  leaf_container->computeData ();
+  computeNeighbors (key, leaf_container);
 
+  // Only Add this container to vector if its a new leaf
+  if (std::find(leaf_vector_.begin(),leaf_vector_.end(),leaf_container)==leaf_vector_.end()) 
+  {
+    leaf_vector_.push_back (leaf_container);
+  }
 
   //Go through and delete voxels scheduled
   std::list <std::pair<OctreeKey,LeafContainerT*> > delete_list;
