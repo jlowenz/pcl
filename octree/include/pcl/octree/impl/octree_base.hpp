@@ -123,13 +123,14 @@ namespace pcl
       LeafContainerT*
       OctreeBase<LeafContainerT, BranchContainerT>::createLeaf (unsigned int idx_x_arg,
                                                                 unsigned int idx_y_arg,
-                                                                unsigned int idx_z_arg)
+                                                                unsigned int idx_z_arg,
+								bool* newly_created)
       {
         // generate key
         OctreeKey key (idx_x_arg, idx_y_arg, idx_z_arg);
 
-        // check if key exist in octree
-        return (createLeaf (key));
+        // check if key exists in octree
+        return (createLeaf (key, newly_created));
       }
 
     //////////////////////////////////////////////////////////////////////////////////////////////
@@ -287,11 +288,12 @@ namespace pcl
                                                                          unsigned int depth_mask_arg,
                                                                          BranchNode* branch_arg,
                                                                          LeafNode*& return_leaf_arg,
-                                                                         BranchNode*& parent_of_leaf_arg)
+                                                                         BranchNode*& parent_of_leaf_arg,
+                                                                         bool* newly_created)
       {
         // index to branch child
         unsigned char child_idx;
-
+        
         // find branch child from key
         child_idx = key_arg.getChildIdxWithDepthMask (depth_mask_arg);
 
@@ -299,6 +301,7 @@ namespace pcl
 
         if (!child_node)
         {
+          if (newly_created) {*newly_created=true;} // leaf node will be new
           if ((!dynamic_depth_enabled_) && (depth_mask_arg > 1))
           {
             // if required branch does not exist -> create it
@@ -306,7 +309,7 @@ namespace pcl
 
             branch_count_++;
 
-            // recursively proceed with indexed child branch
+            // recursively proceed with indexed child branch            
             return createLeafRecursive (key_arg, depth_mask_arg / 2, childBranch, return_leaf_arg, parent_of_leaf_arg);
 
           }
@@ -330,17 +333,16 @@ namespace pcl
             case BRANCH_NODE:
               // recursively proceed with indexed child branch
               return createLeafRecursive (key_arg, depth_mask_arg / 2, static_cast<BranchNode*> (child_node),
-                                          return_leaf_arg, parent_of_leaf_arg);
+                                          return_leaf_arg, parent_of_leaf_arg, newly_created);
               break;
 
             case LEAF_NODE:
-              return_leaf_arg = static_cast<LeafNode*> (child_node);;
-              parent_of_leaf_arg = branch_arg;
+              return_leaf_arg = static_cast<LeafNode*> (child_node);
+              parent_of_leaf_arg = branch_arg;              
+  	      if (newly_created) {*newly_created=false;} // leaf node already exists
               break;
           }
-
         }
-
         return (depth_mask_arg >> 1);
       }
 

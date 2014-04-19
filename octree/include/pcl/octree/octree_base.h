@@ -167,10 +167,11 @@ namespace pcl
          *  \param idx_x_arg: index of leaf node in the X axis.
          *  \param idx_y_arg: index of leaf node in the Y axis.
          *  \param idx_z_arg: index of leaf node in the Z axis.
+         *  \param newly_created: optional output arg set to false if leaf node previously existed
          *  \return pointer to new leaf node container.
          * */
         LeafContainerT*
-        createLeaf (unsigned int idx_x_arg, unsigned int idx_y_arg, unsigned int idx_z_arg);
+        createLeaf (unsigned int idx_x_arg, unsigned int idx_y_arg, unsigned int idx_z_arg, bool* newly_created=NULL);
 
         /** \brief Find leaf node at (idx_x_arg, idx_y_arg, idx_z_arg).
          *  \note If leaf node already exist, this method returns the existing node
@@ -262,16 +263,17 @@ namespace pcl
 
         /** \brief Create a leaf node
          *  \param key_arg: octree key addressing a leaf node.
+         *  \param newly_created: optional output arg set to false if leaf node previously existed
          *  \return pointer to leaf node
          * */
         LeafContainerT*
-        createLeaf (const OctreeKey& key_arg)
+        createLeaf (const OctreeKey& key_arg, bool* newly_created=NULL)
         {
 
           LeafNode* leaf_node;
           BranchNode* leaf_node_parent;
 
-          createLeafRecursive (key_arg, depth_mask_ ,root_node_, leaf_node, leaf_node_parent);
+          createLeafRecursive (key_arg, depth_mask_ ,root_node_, leaf_node, leaf_node_parent, newly_created);
 
           LeafContainerT* ret = leaf_node->getContainerPtr();
 
@@ -466,6 +468,7 @@ namespace pcl
          *  \param branch_arg: current branch node
          *  \param return_leaf_arg: return pointer to leaf node
          *  \param parent_of_leaf_arg: return pointer to parent of leaf node
+         *  \param newly_created: optional output arg set to false if leaf node previously existed
          *  \return depth mask at which leaf node was created
          **/
         unsigned int
@@ -473,7 +476,8 @@ namespace pcl
                              unsigned int depth_mask_arg,
                              BranchNode* branch_arg,
                              LeafNode*& return_leaf_arg,
-                             BranchNode*& parent_of_leaf_arg);
+                             BranchNode*& parent_of_leaf_arg,
+                             bool* newly_created=NULL);
 
         /** \brief Recursively search for a given leaf node and return a pointer.
          *  \note  If leaf node does not exist, a 0 pointer is returned.

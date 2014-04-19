@@ -82,8 +82,6 @@ pcl::octree::OctreePointCloudAdjacency<PointT, LeafContainerT, BranchContainerT>
 template<typename PointT, typename LeafContainerT, typename BranchContainerT> void
 pcl::octree::OctreePointCloudAdjacency<PointT, LeafContainerT, BranchContainerT>::addPointIdx (const int pointIdx_arg)
 {
-//  std::cout<<"THE FUNCTION WE WANT TO BE CALLED IS BEING CALLED"<<std::endl;
-
   OctreeKey key;
   
   assert (pointIdx_arg < static_cast<int> (this->input_->points.size ()));
@@ -100,65 +98,27 @@ pcl::octree::OctreePointCloudAdjacency<PointT, LeafContainerT, BranchContainerT>
   // generate key
   this->genOctreeKeyforPoint (point, key); // Does the transform internally, though it would be easier now to just pass in temp
 
-// octree reconstruction
+  // adjacency octree implies fixed sized voxels
+  assert(this->dynamic_depth_enabled_ == false);
+  std::cout<<"Dynamic depth?"<<this->dynamic_depth_enabled_<<std::endl;
+
+  // Create leaf if one doesnt already exist  
+  bool newly_created=true; // determine if the leaf already exists
   LeafNode* leaf_node;
   BranchNode* parent_branch_of_leaf_node;
-  unsigned int depth_mask = this->createLeafRecursive (key, this->depth_mask_ ,this->root_node_, leaf_node, parent_branch_of_leaf_node);
-
-  if (this->dynamic_depth_enabled_ && depth_mask)
-  {
-    // get amount of objects in leaf container
-    size_t leaf_obj_count = (*leaf_node)->getSize ();
-
-    while  (leaf_obj_count>=this->max_objs_per_leaf_ && depth_mask)
-    {
-      // index to branch child
-      unsigned char child_idx = key.getChildIdxWithDepthMask (depth_mask*2);
-
-      this->expandLeafNode (leaf_node,
-                      parent_branch_of_leaf_node,
-                      child_idx,
-                      depth_mask);
-
-      depth_mask = this->createLeafRecursive (key, this->depth_mask_ ,this->root_node_, leaf_node, parent_branch_of_leaf_node);
-      leaf_obj_count = (*leaf_node)->getSize ();
-    }
-  }
-
+  unsigned int depth_mask = this->createLeafRecursive (key, this->depth_mask_ ,this->root_node_, leaf_node, parent_branch_of_leaf_node, &newly_created);
   (*leaf_node)->addPointIndex (pointIdx_arg);
 
+  // Container management, new leaf update
+  LeafContainerT* leaf_container = this->createLeaf(key);
 
-// Container management, new leaf update
-  // add point to octree at key (set VoxelData for leaf container).
-  LeafContainerT* leaf_container = this->createLeaf(key);  // Generates Octree Key for Point, or returns existing leaf container ptr
-
-  // From the original algorithm just modify the existing container using overloaded specialized addPoint function
+  // From the original algorithm, modify the existing container using overloaded specialized addPoint, computeData functions
   leaf_container->addPoint (point);
   leaf_container->computeData ();
   computeNeighbors (key, leaf_container);
 
   // Only Add this container to vector if its a new leaf
-  if (std::find(leaf_vector_.begin(),leaf_vector_.end(),leaf_container)==leaf_vector_.end()) 
-  {
-    leaf_vector_.push_back (leaf_container);
-  }
-
-  //Go through and delete voxels scheduled
-  std::list <std::pair<OctreeKey,LeafContainerT*> > delete_list;
-  for (typename std::list<std::pair<OctreeKey,LeafContainerT*> >::iterator delete_itr = delete_list.begin (); delete_itr != delete_list.end (); ++delete_itr)
-  {
-    leaf_container = delete_itr->second;
-    //Remove pointer to it from all neighbors
-    typename std::set<LeafContainerT*>::iterator neighbor_itr = leaf_container->begin ();
-    typename std::set<LeafContainerT*>::iterator neighbor_end = leaf_container->end ();
-    for ( ; neighbor_itr != neighbor_end; ++neighbor_itr)
-    {
-      //Don't delete self neighbor
-      if (*neighbor_itr != leaf_container)
-        (*neighbor_itr)->removeNeighbor (leaf_container);
-    }
-    this->removeLeaf (delete_itr->first);
-  }
+  if (newly_created) leaf_vector_.push_back (leaf_container);
   
   //Make sure our leaf vector is correctly sized
   assert (leaf_vector_.size () == this->getLeafCount ());

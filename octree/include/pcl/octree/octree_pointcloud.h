@@ -408,7 +408,6 @@ namespace pcl
           this->dynamic_depth_enabled_ = static_cast<bool> (max_objs_per_leaf_>0);
         }
 
-
       protected:
 
         /** \brief Add point at index from input pointcloud dataset to octree
