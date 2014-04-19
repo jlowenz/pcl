@@ -105,7 +105,7 @@ pcl::octree::OctreePointCloudAdjacency<PointT, LeafContainerT, BranchContainerT>
   bool newly_created=true; // determine if the leaf already exists
   LeafNode* leaf_node;
   BranchNode* parent_branch_of_leaf_node;
-  unsigned int depth_mask = this->createLeafRecursive (key, this->depth_mask_ ,this->root_node_, leaf_node, parent_branch_of_leaf_node, &newly_created);
+  this->createLeafRecursive (key, this->depth_mask_ ,this->root_node_, leaf_node, parent_branch_of_leaf_node, &newly_created);
   (*leaf_node)->addPointIndex (pointIdx_arg);
 
   // Container management, new leaf update

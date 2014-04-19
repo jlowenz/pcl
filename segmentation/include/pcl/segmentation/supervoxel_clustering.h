@@ -121,6 +121,7 @@ namespace pcl
   template <typename PointT>
   class PCL_EXPORTS SupervoxelClustering : public pcl::PCLBase<PointT>
   {
+    protected:
     //Forward declaration of friended helper class
     class SupervoxelHelper;
     friend class SupervoxelHelper;
@@ -137,6 +138,7 @@ namespace pcl
             rgb_ (0.0f, 0.0f, 0.0f),
             normal_ (0.0f, 0.0f, 0.0f, 0.0f),
             curvature_ (0.0f),
+            growable_ (true),
             owner_ (0)
             {}
             
@@ -164,6 +166,7 @@ namespace pcl
           Eigen::Vector4f normal_;
           float curvature_;
           float distance_;
+          bool growable_;
           int idx_;
           SupervoxelHelper* owner_;
           
@@ -322,7 +325,7 @@ namespace pcl
       int
       getMaxLabel () const;
       
-    private:
+    protected:
       
       /** \brief This method initializes the label_colors_ vector (assigns random colors to labels)
        * \note Checks to see if it is already big enough - if so, does not reinitialize it

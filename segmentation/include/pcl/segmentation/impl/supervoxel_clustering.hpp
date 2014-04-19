@@ -897,6 +897,10 @@ pcl::SupervoxelClustering<PointT>::SupervoxelHelper::expand ()
       //TODO this is a shortcut, really we should always recompute distance
       if(neighbor_voxel.owner_ == this)
         continue;
+      // If the voxel is not growable, don't modify it
+      if (!neighbor_voxel.growable_)
+        continue;
+
       //Compute distance to the neighbor
       float dist = parent_->voxelDataDistance (centroid_, neighbor_voxel);
       //If distance is less than previous, we remove it from its owner's list
