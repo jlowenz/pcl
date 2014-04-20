@@ -136,13 +136,15 @@ namespace pcl
 	    num_pts_(0),
             xyz_ (0.0f, 0.0f, 0.0f),
             rgb_ (0.0f, 0.0f, 0.0f),
+	    min_ (1e10,1e10,1e10),
+	    max_ (-1e10,-1e10,-1e10),
             normal_ (0.0f, 0.0f, 0.0f, 0.0f),
             curvature_ (0.0f),
-	      distance_ (0.0f),
+	    distance_ (0.0f),
             growable_ (true),
 	    idx_ (0),
             owner_ (0)
-            {}
+	{}
             
           /** \brief Gets the data of in the form of a point
            *  \param[out] point_arg Will contain the point value of the voxeldata
@@ -165,7 +167,10 @@ namespace pcl
 	  uint num_pts_;
           Eigen::Vector3f xyz_;
           Eigen::Vector3f rgb_;
+          Eigen::Vector3f min_;
+          Eigen::Vector3f max_;
           Eigen::Vector4f normal_;
+
           float curvature_;
           float distance_;
           bool growable_;

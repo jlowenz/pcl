@@ -808,6 +808,14 @@ namespace pcl
     normal_arg.curvature = curvature_;
   }
 
+  template <typename P, typename F> void 
+  extrema(Eigen::Vector3f& out, const Eigen::Vector3f& b, const P& a, F f)
+  {
+    out[0] = f(a.x,b[0]);
+    out[1] = f(a.y,b[1]);
+    out[2] = f(a.z,b[2]);
+  }
+
   // specializations for different point types
   template <> void
   pcl::SupervoxelClustering<pcl::PointXYZ>::VoxelData::addPoint (const pcl::PointXYZ& pt) 
@@ -822,14 +830,16 @@ namespace pcl
   template <> void
   pcl::SupervoxelClustering<PointXYZRGB>::VoxelData::addPoint (const PointXYZRGB& pt) 
   {
-    if (num_pts_ % 10 == 0) {std::cout<<"pt "<<pt.x<<","<<pt.y<<","<<pt.z<<std::endl;}
+    //if (num_pts_ % 10 == 0) {std::cout<<"pt "<<pt.x<<","<<pt.y<<","<<pt.z<<std::endl;}
+    extrema(min_, min_, pt, &std::min<float>);
+    extrema(max_, max_, pt, &std::max<float>);
     xyz_[0] = xyz_[0] + (pt.x - xyz_[0]) / (num_pts_ + 1.f);
     xyz_[1] = xyz_[1] + (pt.y - xyz_[1]) / (num_pts_ + 1.f);
     xyz_[2] = xyz_[2] + (pt.z - xyz_[2]) / (num_pts_ + 1.f);
     rgb_[0] = rgb_[0] + (pt.r - rgb_[0]) / (num_pts_ + 1.f);
     rgb_[1] = rgb_[1] + (pt.g - rgb_[1]) / (num_pts_ + 1.f);
     rgb_[2] = rgb_[2] + (pt.b - rgb_[2]) / (num_pts_ + 1.f);
-    if (num_pts_ % 10 == 0) {std::cout<<"xyz "<<xyz_<<std::endl;}
+    //if (num_pts_ % 10 == 0) {std::cout<<"xyz "<<xyz_<<std::endl;}
     num_pts_++;
   }
 
