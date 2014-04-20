@@ -813,33 +813,35 @@ namespace pcl
   pcl::SupervoxelClustering<pcl::PointXYZ>::VoxelData::addPoint (const pcl::PointXYZ& pt) 
   {
     // running average
-    xyz_[0] += xyz_[0] + (pt.x - xyz_[0]) / (num_pts_ + 1.f);
-    xyz_[1] += xyz_[1] + (pt.y - xyz_[1]) / (num_pts_ + 1.f);
-    xyz_[2] += xyz_[2] + (pt.z - xyz_[2]) / (num_pts_ + 1.f);
+    xyz_[0] = xyz_[0] + (pt.x - xyz_[0]) / (num_pts_ + 1.f);
+    xyz_[1] = xyz_[1] + (pt.y - xyz_[1]) / (num_pts_ + 1.f);
+    xyz_[2] = xyz_[2] + (pt.z - xyz_[2]) / (num_pts_ + 1.f);
     num_pts_++;
   }
 
   template <> void
   pcl::SupervoxelClustering<PointXYZRGB>::VoxelData::addPoint (const PointXYZRGB& pt) 
   {
-    xyz_[0] += xyz_[0] + (pt.x - xyz_[0]) / (num_pts_ + 1.f);
-    xyz_[1] += xyz_[1] + (pt.y - xyz_[1]) / (num_pts_ + 1.f);
-    xyz_[2] += xyz_[2] + (pt.z - xyz_[2]) / (num_pts_ + 1.f);
-    rgb_[0] += rgb_[0] + (pt.r - rgb_[0]) / (num_pts_ + 1.f);
-    rgb_[1] += rgb_[1] + (pt.g - rgb_[1]) / (num_pts_ + 1.f);
-    rgb_[2] += rgb_[2] + (pt.b - rgb_[2]) / (num_pts_ + 1.f);
+    if (num_pts_ % 10 == 0) {std::cout<<"pt "<<pt.x<<","<<pt.y<<","<<pt.z<<std::endl;}
+    xyz_[0] = xyz_[0] + (pt.x - xyz_[0]) / (num_pts_ + 1.f);
+    xyz_[1] = xyz_[1] + (pt.y - xyz_[1]) / (num_pts_ + 1.f);
+    xyz_[2] = xyz_[2] + (pt.z - xyz_[2]) / (num_pts_ + 1.f);
+    rgb_[0] = rgb_[0] + (pt.r - rgb_[0]) / (num_pts_ + 1.f);
+    rgb_[1] = rgb_[1] + (pt.g - rgb_[1]) / (num_pts_ + 1.f);
+    rgb_[2] = rgb_[2] + (pt.b - rgb_[2]) / (num_pts_ + 1.f);
+    if (num_pts_ % 10 == 0) {std::cout<<"xyz "<<xyz_<<std::endl;}
     num_pts_++;
   }
 
   template <> void
   pcl::SupervoxelClustering<PointXYZRGBA>::VoxelData::addPoint (const PointXYZRGBA& pt) 
   {
-    xyz_[0] += xyz_[0] + (pt.x - xyz_[0]) / (num_pts_ + 1.f);
-    xyz_[1] += xyz_[1] + (pt.y - xyz_[1]) / (num_pts_ + 1.f);
-    xyz_[2] += xyz_[2] + (pt.z - xyz_[2]) / (num_pts_ + 1.f);
-    rgb_[0] += rgb_[0] + (pt.r - rgb_[0]) / (num_pts_ + 1.f);
-    rgb_[1] += rgb_[1] + (pt.g - rgb_[1]) / (num_pts_ + 1.f);
-    rgb_[2] += rgb_[2] + (pt.b - rgb_[2]) / (num_pts_ + 1.f);
+    xyz_[0] = xyz_[0] + (pt.x - xyz_[0]) / (num_pts_ + 1.f);
+    xyz_[1] = xyz_[1] + (pt.y - xyz_[1]) / (num_pts_ + 1.f);
+    xyz_[2] = xyz_[2] + (pt.z - xyz_[2]) / (num_pts_ + 1.f);
+    rgb_[0] = rgb_[0] + (pt.r - rgb_[0]) / (num_pts_ + 1.f);
+    rgb_[1] = rgb_[1] + (pt.g - rgb_[1]) / (num_pts_ + 1.f);
+    rgb_[2] = rgb_[2] + (pt.b - rgb_[2]) / (num_pts_ + 1.f);
     num_pts_++;
   }
 }
