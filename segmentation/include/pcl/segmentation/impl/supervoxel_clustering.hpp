@@ -428,8 +428,16 @@ pcl::SupervoxelClustering<PointT>::reseedSupervoxels ()
     sv_itr->removeAllLeaves ();
   }
   
+  if (voxel_kdtree_ == 0)
+  {
+    voxel_kdtree_.reset (new pcl::search::KdTree<PointT>);
+    voxel_kdtree_ ->setInputCloud (voxel_centroid_cloud_);
+  }
+
   std::vector<int> closest_index;
   std::vector<float> distance;
+  closest_index.resize(1,0);
+  distance.resize(1,0);
   //Now go through each supervoxel, find voxel closest to its center, add it in
   for (typename HelperListT::iterator sv_itr = supervoxel_helpers_.begin (); sv_itr != supervoxel_helpers_.end (); ++sv_itr)
   {
