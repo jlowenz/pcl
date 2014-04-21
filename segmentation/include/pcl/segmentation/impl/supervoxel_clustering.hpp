@@ -884,6 +884,7 @@ pcl::SupervoxelClustering<PointT>::SupervoxelHelper::removeAllLeaves ()
   {
     VoxelData& voxel = ((*leaf_itr)->getData ());
     voxel.owner_ = 0;
+    voxel.growable_ = true;
     voxel.distance_ = std::numeric_limits<float>::max ();
   }
   leaves_.clear ();
