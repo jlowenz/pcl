@@ -908,11 +908,14 @@ pcl::SupervoxelClustering<PointT>::SupervoxelHelper::expand ()
       //Get a reference to the data contained in the leaf
       VoxelData& neighbor_voxel = ((*neighb_itr)->getData ());
       //TODO this is a shortcut, really we should always recompute distance
-      if(neighbor_voxel.owner_ == this)
+      if(neighbor_voxel.owner_ == this) {
         continue;
+      }
       // If the voxel is not growable, don't modify it
-      if (!neighbor_voxel.growable_)
+      if (!neighbor_voxel.growable_) {
+	//std::cerr << "NEIGHBOR NOT GROWABLE" << std::endl;
         continue;
+      }
 
       //Compute distance to the neighbor
       float dist = parent_->voxelDataDistance (centroid_, neighbor_voxel);

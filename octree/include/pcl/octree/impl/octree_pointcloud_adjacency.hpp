@@ -90,7 +90,7 @@ pcl::octree::OctreePointCloudAdjacency<PointT, LeafContainerT, BranchContainerT>
   if (!pcl::isFinite (point))
     return;
      
-  PointT temp (this->input_->points[pointIdx_arg]);
+  PointT temp (point);
   if (transform_func_) 
     transform_func_ (temp);
   this->adoptBoundingBoxToPoint (temp);
@@ -108,16 +108,17 @@ pcl::octree::OctreePointCloudAdjacency<PointT, LeafContainerT, BranchContainerT>
   this->createLeafRecursive (key, this->depth_mask_ ,this->root_node_, leaf_node, parent_branch_of_leaf_node, &newly_created);
   (*leaf_node)->addPointIndex (pointIdx_arg);
 
-  // Container management, new leaf update
-  LeafContainerT* leaf_container = this->createLeaf(key);
-
   // From the original algorithm, modify the existing container using overloaded specialized addPoint, computeData functions
+
+  LeafContainerT* leaf_container = (*leaf_node)->getContainerPtr();
+  computeNeighbors (key, leaf_container); // this is OK, since the neighbor container is a set
   leaf_container->addPoint (point);
-  leaf_container->computeData ();
-  computeNeighbors (key, leaf_container);
+  //leaf_container->computeData();
 
   // Only Add this container to vector if its a new leaf
-  if (newly_created) leaf_vector_.push_back (leaf_container);
+  if (newly_created) {
+    leaf_vector_.push_back (leaf_container);
+  }
   
   //Make sure our leaf vector is correctly sized
   assert (leaf_vector_.size () == this->getLeafCount ());
