@@ -332,6 +332,10 @@ namespace pcl
       int
       getMaxLabel () const;
       
+      /** \brief Returns the value of label_colors_ at label value*/
+      uint32_t 
+      getColorFromLabel(uint32_t label) {return label_colors_[label];}
+
     protected:
       
       /** \brief This method initializes the label_colors_ vector (assigns random colors to labels)
