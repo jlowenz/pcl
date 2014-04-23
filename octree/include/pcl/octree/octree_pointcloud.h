@@ -124,6 +124,8 @@ namespace pcl
         typedef boost::shared_ptr<PointCloud> PointCloudPtr;
         typedef boost::shared_ptr<const PointCloud> PointCloudConstPtr;
 
+	typedef std::vector<OctreeKey> OctreeKeys;
+
         // public typedefs for single/double buffering
         typedef OctreePointCloud<PointT, LeafContainerT, BranchContainerT, OctreeBase<LeafContainerT> > SingleBuffer;
        // typedef OctreePointCloud<PointT, LeafContainerT, BranchContainerT, Octree2BufBase<LeafContainerT> > DoubleBuffer;
@@ -272,6 +274,14 @@ namespace pcl
          */
         int
         getOccupiedVoxelCenters (AlignedPointTVector &voxel_center_list_arg) const;
+
+	/** \brief Get a PointT vector of centers corresponding to the given points.
+	 * \param[in] pts a list of points already in the octree
+	 * \param[out] voxel_center_list_arg results are pushed to this vector of PointT elements
+	 * \return number of voxels corresponding to points
+	 */
+	int
+	getVoxelCentersForPoints(const PointCloud& pts, AlignedPointTVector& voxel_center_list_arg) const;
 
         /** \brief Get a PointT vector of centers of voxels intersected by a line segment.
          * This returns a approximation of the actual intersected voxels by walking

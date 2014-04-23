@@ -301,7 +301,6 @@ namespace pcl
 
         if (!child_node)
         {
-          if (newly_created) {*newly_created=true;} // leaf node will be new
           if ((!dynamic_depth_enabled_) && (depth_mask_arg > 1))
           {
             // if required branch does not exist -> create it
@@ -310,11 +309,12 @@ namespace pcl
             branch_count_++;
 
             // recursively proceed with indexed child branch            
-            return createLeafRecursive (key_arg, depth_mask_arg / 2, childBranch, return_leaf_arg, parent_of_leaf_arg);
+            return createLeafRecursive (key_arg, depth_mask_arg / 2, childBranch, return_leaf_arg, parent_of_leaf_arg, newly_created);
 
           }
           else
           {
+	    if (newly_created) { *newly_created=true; } // leaf node will be new
             // if leaf node at child_idx does not exist
             LeafNode* leaf_node = createLeafChild (*branch_arg, child_idx);
             return_leaf_arg = leaf_node;

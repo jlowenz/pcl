@@ -45,7 +45,7 @@ namespace pcl {
     template<typename LeafContainerT,
 	     typename BranchContainerT>
     void 
-    OctreeLeafSignal<LeafContainerT,BranchContainerT>::connect(typename OctreeObserverT::Ptr& observer)
+    OctreeLeafSignal<LeafContainerT,BranchContainerT>::connect(const typename OctreeObserverT::Ptr& observer)
     {
       observers_.push_back(observer);
     }
@@ -53,7 +53,7 @@ namespace pcl {
     template<typename LeafContainerT,
 	     typename BranchContainerT>
     void 
-    OctreeLeafSignal<LeafContainerT,BranchContainerT>::disconnect(typename OctreeObserverT::Ptr& observer)
+    OctreeLeafSignal<LeafContainerT,BranchContainerT>::disconnect(const typename OctreeObserverT::Ptr& observer)
     {
       typename ObserverList::iterator i;
       i = std::find(observers_.begin(), observers_.end(), observer);
