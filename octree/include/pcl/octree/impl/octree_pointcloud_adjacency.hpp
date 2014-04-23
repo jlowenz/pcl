@@ -110,7 +110,7 @@ pcl::octree::OctreePointCloudAdjacency<PointT, LeafContainerT, BranchContainerT>
 
   // From the original algorithm, modify the existing container using overloaded specialized addPoint, computeData functions
 
-  LeafContainerT* leaf_container = (*leaf_node)->getContainerPtr();
+  LeafContainerT* leaf_container = leaf_node->getContainerPtr();
   computeNeighbors (key, leaf_container); // this is OK, since the neighbor container is a set
   leaf_container->addPoint (point);
   //leaf_container->computeData();

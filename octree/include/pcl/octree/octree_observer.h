@@ -43,8 +43,10 @@
 #include <pcl/console/print.h>
 #include <pcl/common/geometry.h>
 #include <pcl/octree/boost.h>
+#include <pcl/octree/octree_key.h>
 
 #include <list>
+
 
 namespace pcl
 {
@@ -60,7 +62,7 @@ namespace pcl
       typedef boost::shared_ptr<OctreeObserver<LeafContainerT,BranchContainerT> > Ptr;
       typedef LeafContainerT LeafContainer;
       //typedef BranchContainerT BranchContainer;
-      
+
       virtual void leafCreated(LeafContainerT* leaf) = 0;
       virtual void leafDestroyed(LeafContainerT* leaf) = 0;
     };
@@ -73,8 +75,8 @@ namespace pcl
     public:
       typedef OctreeObserver<LeafContainerT,BranchContainerT> OctreeObserverT; 
       
-      void connect(typename OctreeObserverT::Ptr& observer);
-      void disconnect(typename OctreeObserverT::Ptr& observer);
+      void connect(const typename OctreeObserverT::Ptr& observer);
+      void disconnect(const typename OctreeObserverT::Ptr& observer);
 
       // signals
       void leafCreated(LeafContainerT* leaf);

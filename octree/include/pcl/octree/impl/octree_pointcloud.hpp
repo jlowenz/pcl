@@ -201,6 +201,21 @@ pcl::octree::OctreePointCloud<PointT, LeafContainerT, BranchContainerT, OctreeT>
 
 }
 
+template<typename PointT, typename LeafContainerT, typename BranchContainerT, typename OctreeT> int
+pcl::octree::OctreePointCloud<PointT, LeafContainerT, BranchContainerT, OctreeT>::getVoxelCentersForPoints(const PointCloud& pts, AlignedPointTVector& voxel_center_list_arg) const
+{
+  size_t sz = pts.size();
+  PointT pt;
+  OctreeKey key;
+  for (size_t i = 0; i < sz; ++i) {    
+    // generate key for point
+    this->genOctreeKeyforPoint (pts[i], key);
+    genLeafNodeCenterFromOctreeKey(key, pt);
+    voxel_center_list_arg.push_back(pt);
+  }
+  return sz; // ? should we be checking that the leaf exists?
+}
+
 //////////////////////////////////////////////////////////////////////////////////////////////
 template<typename PointT, typename LeafContainerT, typename BranchContainerT, typename OctreeT> int
 pcl::octree::OctreePointCloud<PointT, LeafContainerT, BranchContainerT, OctreeT>::getApproxIntersectedVoxelCentersBySegment (

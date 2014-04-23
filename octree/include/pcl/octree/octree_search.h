@@ -77,6 +77,9 @@ namespace pcl
         typedef typename OctreeT::LeafNode LeafNode;
         typedef typename OctreeT::BranchNode BranchNode;
 
+	typedef typename OctreeT::ObserverT ObserverT;
+	using OctreeT::leaf_signal;        
+
         /** \brief Constructor.
           * \param[in] resolution octree resolution at lowest octree level
           */
