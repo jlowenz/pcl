@@ -363,7 +363,7 @@ namespace pcl
       createSupervoxelHelpers (std::vector<PointT, Eigen::aligned_allocator<PointT> > &seed_points);
       
       /** \brief This performs the superpixel evolution */
-      void
+      virtual void
       expandSupervoxels (int depth);
 
       /** \brief This sets the data of the voxels in the tree */
@@ -423,7 +423,8 @@ namespace pcl
         public:
           SupervoxelHelper (uint32_t label, SupervoxelClustering* parent_arg):
             label_ (label),
-            parent_ (parent_arg)
+            parent_ (parent_arg),
+            interior_(false)
           { }
           
           void
@@ -499,6 +500,9 @@ namespace pcl
           
           size_t
           size () const { return leaves_.size (); }
+
+          bool interior_; // marks interior vs border supervoxels
+
         private:
           //Stores leaves
           std::set<LeafContainerT*> leaves_;
