@@ -421,11 +421,11 @@ namespace pcl
       class SupervoxelHelper
       {
         public:
-          SupervoxelHelper (uint32_t label, SupervoxelClustering* parent_arg):
-            label_ (label),
-            parent_ (parent_arg),
-            interior_(false)
-          { }
+	SupervoxelHelper (uint32_t label, SupervoxelClustering* parent_arg):
+	  interior_(false),
+	  label_ (label),
+	  parent_ (parent_arg)
+	{ }
           
           void
           addLeaf (LeafContainerT* leaf_arg);
